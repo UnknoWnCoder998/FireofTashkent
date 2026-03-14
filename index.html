@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Огни Ташкента — кафе-ресторан в стиле 60-х. Ташкент, ул. Бухара 24. Ежедневно 08:00–23:00.">
+<meta name="keywords" content="Огни Ташкента, кафе, ресторан, Ташкент, Бухара 24, 60-е, европейская кухня">
+<title>Огни Ташкента — Кафе-ресторан</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Raleway:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --night:#0b0804;--dark:#14100a;--ember:#231608;--brown:#3a2010;
+  --copper:#7a4a28;--amber:#c8813a;--gold:#e8b860;--pale:#f5d888;
+  --cream:#f5ead8;--warm:#faf4ec;
+  --dim:rgba(245,234,216,.45);--muted:rgba(245,234,216,.65);
+  --tr:cubic-bezier(.25,.46,.45,.94);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Raleway',sans-serif;background:var(--night);color:var(--cream);overflow-x:hidden;cursor:none}
+
+/* Cursor */
+.cdot{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s}
+.cring{width:32px;height:32px;border:1px solid rgba(232,184,96,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .4s,height .4s}
+body:has(a:hover) .cdot,body:has(button:hover) .cdot{width:14px;height:14px;background:var(--pale)}
+body:has(a:hover) .cring,body:has(button:hover) .cring{width:50px;height:50px;border-color:var(--gold)}
+
+/* Loader */
+.loader{position:fixed;inset:0;z-index:2000;background:var(--night);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.6rem;transition:opacity .9s var(--tr),visibility .9s}
+.loader.out{opacity:0;visibility:hidden}
+.ld-name{font-family:'Tenor Sans',serif;font-size:2rem;letter-spacing:.2em;color:var(--cream);opacity:0;animation:fi 1s .3s forwards;text-align:center}
+.ld-sub{font-size:.65rem;letter-spacing:.38em;text-transform:uppercase;color:var(--amber);opacity:0;animation:fi 1s .7s forwards}
+.ld-bar{width:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:lb 1.8s .4s ease forwards}
+@keyframes fi{to{opacity:1}}
+@keyframes lb{to{width:200px}}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.6rem 3rem;display:flex;align-items:center;justify-content:space-between;transition:all .5s var(--tr)}
+nav.sc{background:rgba(11,8,4,.92);backdrop-filter:blur(24px);border-bottom:1px solid rgba(232,184,96,.1);padding:1rem 3rem}
+.nlogo{font-family:'Tenor Sans',serif;font-size:1.25rem;letter-spacing:.12em;color:var(--cream);text-decoration:none}
+.nlogo span{color:var(--gold)}
+.nlinks{display:flex;gap:2.4rem;list-style:none}
+.nlinks a{font-size:.73rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);text-decoration:none;position:relative;transition:color .3s}
+.nlinks a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:right;transition:transform .35s var(--tr)}
+.nlinks a:hover{color:var(--gold)}
+.nlinks a:hover::after{transform:scaleX(1);transform-origin:left}
+.ncta{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:var(--night);background:var(--gold);padding:.7rem 1.5rem;border-radius:1px;text-decoration:none;transition:all .3s;cursor:none}
+.ncta:hover{background:var(--pale);transform:translateY(-2px);box-shadow:0 6px 20px rgba(232,184,96,.3)}
+.nburg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:none;padding:4px}
+.nburg span{display:block;width:22px;height:1.5px;background:var(--cream);transition:all .3s}
+
+/* Mobile menu */
+.mmenu{display:none;position:fixed;inset:0;z-index:150;background:var(--night);flex-direction:column;align-items:center;justify-content:center;gap:2.5rem}
+.mmenu.open{display:flex}
+.mmenu a{font-family:'Tenor Sans',serif;font-size:2.2rem;letter-spacing:.08em;color:var(--cream);text-decoration:none;transition:color .3s}
+.mmenu a:hover{color:var(--gold)}
+.mcls{position:absolute;top:2rem;right:2rem;background:none;border:none;color:var(--cream);font-size:1.6rem;cursor:none;opacity:.6;transition:opacity .3s}
+.mcls:hover{opacity:1}
+
+/* Hero */
+#hero{position:relative;height:100vh;min-height:680px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hbg{position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(11,8,4,.3) 0%,rgba(11,8,4,.58) 55%,rgba(11,8,4,.95) 100%),
+  url('https://www.afisha.uz/uploads/media/2018/11/0464776_m.jpeg') center/cover no-repeat;
+  transform:scale(1.05);transition:transform 9s ease-out}
+.hbg.on{transform:scale(1)}
+.hpar{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.par{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:pf var(--d,8s) var(--dl,0s) ease-in-out infinite}
+@keyframes pf{0%,100%{opacity:0;transform:translateY(0) scale(0)}35%,65%{opacity:.6}50%{transform:translateY(-55px) scale(1)}}
+.hcon{position:relative;z-index:2;text-align:center;padding:0 1.5rem;opacity:0;transform:translateY(48px);transition:all 1.4s var(--tr)}
+.hcon.on{opacity:1;transform:translateY(0)}
+.hey{font-size:.64rem;letter-spacing:.44em;text-transform:uppercase;color:var(--gold);margin-bottom:1.6rem;display:block;font-weight:400}
+.htit{font-family:'Tenor Sans',serif;font-size:clamp(3rem,9vw,8rem);line-height:.93;color:var(--cream);letter-spacing:.07em;margin-bottom:.4rem;text-shadow:0 4px 48px rgba(232,184,96,.12)}
+.htit-g{font-family:'Lora',serif;font-style:italic;font-size:clamp(1.6rem,4.2vw,3.8rem);color:var(--gold);display:block;letter-spacing:.1em;text-shadow:0 0 50px rgba(232,184,96,.55);margin-top:.3rem}
+.hsub{font-size:clamp(.86rem,1.8vw,1rem);color:rgba(245,234,216,.62);font-weight:300;letter-spacing:.06em;max-width:520px;margin:1.8rem auto 3rem;line-height:1.85}
+.hbtns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.bglow{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;background:var(--gold);color:var(--night);padding:1rem 2.4rem;border:none;border-radius:1px;cursor:none;text-decoration:none;position:relative;overflow:hidden;transition:all .35s var(--tr)}
+.bglow::before{content:'';position:absolute;inset:0;background:var(--pale);transform:translateX(-100%);transition:transform .35s var(--tr)}
+.bglow:hover::before{transform:translateX(0)}
+.bglow:hover{box-shadow:0 8px 32px rgba(232,184,96,.4);transform:translateY(-2px)}
+.bglow span{position:relative;z-index:1}
+.bghost{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:400;color:var(--cream);background:transparent;padding:1rem 2.4rem;border:1px solid rgba(245,234,216,.28);border-radius:1px;cursor:none;text-decoration:none;transition:all .35s var(--tr)}
+.bghost:hover{border-color:var(--gold);color:var(--gold);background:rgba(232,184,96,.06)}
+.hscrl{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;font-size:.6rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(245,234,216,.3);animation:hs 2.2s ease-in-out infinite}
+.hscrl::after{content:'';width:1px;height:40px;background:linear-gradient(to bottom,rgba(232,184,96,.5),transparent)}
+@keyframes hs{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+
+/* Sections */
+section{padding:8rem 0}
+.wrap{max-width:1200px;margin:0 auto;padding:0 2rem}
+.slbl{font-size:.63rem;letter-spacing:.4em;text-transform:uppercase;color:var(--amber);margin-bottom:.8rem;display:block;font-weight:400}
+.stit{font-family:'Tenor Sans',serif;font-size:clamp(2rem,4.5vw,3.6rem);line-height:1.05;color:var(--cream);letter-spacing:.04em}
+.stit em{font-family:'Lora',serif;font-style:italic;color:var(--gold)}
+
+/* Reveals */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .9s var(--tr),transform .9s var(--tr)}
+.rv.in{opacity:1;transform:translateY(0)}
+.rvl{opacity:0;transform:translateX(-36px);transition:opacity .9s var(--tr),transform .9s var(--tr)}
+.rvl.in{opacity:1;transform:translateX(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* About */
+#about{background:var(--dark);position:relative;overflow:hidden}
+#about::before{content:'60е';position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:'Tenor Sans',serif;font-size:clamp(8rem,18vw,20rem);color:rgba(200,131,58,.035);line-height:1;pointer-events:none;white-space:nowrap}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.aimgs{position:relative;height:560px}
+.amain{position:absolute;top:0;left:0;width:73%;height:87%;object-fit:cover;border-radius:3px;box-shadow:0 24px 64px rgba(0,0,0,.65)}
+.aacc{position:absolute;bottom:0;right:0;width:53%;height:57%;object-fit:cover;border-radius:3px;border:5px solid var(--dark);box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.aflame{position:absolute;top:46%;left:56%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;background:radial-gradient(circle,var(--amber),var(--gold));display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 0 40px rgba(232,184,96,.7),0 0 80px rgba(232,184,96,.25);z-index:2;animation:glw 2.5s ease-in-out infinite}
+@keyframes glw{0%,100%{box-shadow:0 0 40px rgba(232,184,96,.7),0 0 80px rgba(232,184,96,.25)}50%{box-shadow:0 0 65px rgba(232,184,96,1),0 0 130px rgba(232,184,96,.4)}}
+.atxt .stit{margin-bottom:1.8rem}
+.atxt p{color:var(--dim);line-height:1.95;font-size:.95rem;font-weight:300;margin-bottom:1.3rem}
+.astats{display:flex;gap:2.5rem;margin-top:2.8rem;padding-top:2rem;border-top:1px solid rgba(232,184,96,.1)}
+.sv{font-family:'Tenor Sans',serif;font-size:2.6rem;color:var(--gold);line-height:1}
+.sl{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:.3rem}
+
+/* Menu */
+#menu{background:var(--night)}
+.mhdr{text-align:center;margin-bottom:4rem}
+.mhdr .stit{margin-bottom:1rem}
+.mhdr p{color:var(--dim);max-width:480px;margin:0 auto;font-weight:300;line-height:1.7;font-size:.9rem}
+.mtabs{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+.mtab{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;padding:.68rem 1.5rem;border:1px solid rgba(232,184,96,.2);background:transparent;color:var(--dim);border-radius:1px;cursor:none;font-family:'Raleway',sans-serif;font-weight:400;transition:all .3s}
+.mtab:hover,.mtab.active{background:var(--gold);color:var(--night);border-color:var(--gold)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:1.5rem}
+.mcard{background:linear-gradient(145deg,rgba(35,22,8,.85),rgba(20,16,10,.9));border:1px solid rgba(232,184,96,.1);border-radius:4px;overflow:hidden;transition:transform .4s var(--tr),box-shadow .4s var(--tr),border-color .4s;cursor:none}
+.mcard:hover{transform:translateY(-8px);box-shadow:0 24px 56px rgba(0,0,0,.55),0 0 0 1px rgba(232,184,96,.22);border-color:rgba(232,184,96,.25)}
+.miw{overflow:hidden;height:215px;background:var(--brown)}
+.mimg{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--tr),filter .4s;filter:brightness(.85)}
+.mcard:hover .mimg{transform:scale(1.08);filter:brightness(1.02)}
+.mbody{padding:1.4rem 1.6rem 1.8rem}
+.mtag{font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--amber);margin-bottom:.4rem;display:block}
+.mname{font-family:'Tenor Sans',serif;font-size:1.25rem;color:var(--cream);letter-spacing:.04em;margin-bottom:.4rem}
+.mdesc{font-size:.82rem;color:var(--dim);line-height:1.65;font-weight:300;margin-bottom:1rem}
+.mprice{font-family:'Lora',serif;font-size:1.1rem;color:var(--gold);font-style:italic}
+.mcat{display:none}.mcat.active{display:contents}
+
+/* Gallery */
+#gallery{background:var(--ember);padding:7rem 0}
+.ghdr{text-align:center;margin-bottom:4rem}
+.ghdr p{color:var(--dim);margin-top:.8rem;font-size:.84rem;letter-spacing:.1em}
+.ggrid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,205px);gap:5px;max-width:1200px;margin:0 auto;padding:0 2rem}
+.gi{overflow:hidden;border-radius:3px;position:relative;cursor:none;background:var(--brown)}
+.gi:nth-child(1){grid-column:span 2;grid-row:span 2}
+.gi:nth-child(5){grid-column:span 2}
+.gi img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--tr),filter .5s;filter:brightness(.78) saturate(.85)}
+.gi:hover img{transform:scale(1.09);filter:brightness(.98) saturate(1.05)}
+.gov{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,8,4,.85) 0%,transparent 55%);opacity:0;transition:opacity .4s;display:flex;align-items:flex-end;padding:1.2rem}
+.gi:hover .gov{opacity:1}
+.gov span{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,234,216,.85)}
+.gig{text-align:center;margin-top:2.5rem;font-size:.84rem;color:var(--dim);letter-spacing:.08em;padding:0 2rem}
+.gig a{color:var(--amber);text-decoration:none;transition:color .3s}
+.gig a:hover{color:var(--gold)}
+
+/* Why */
+#why{background:var(--dark)}
+.whdr{text-align:center;margin-bottom:4rem}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.4rem}
+.wcard{background:rgba(35,22,8,.55);border:1px solid rgba(232,184,96,.1);padding:2.3rem 1.8rem;border-radius:4px;text-align:center;transition:all .4s var(--tr);position:relative;overflow:hidden;cursor:none}
+.wcard::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 110%,rgba(232,184,96,.07),transparent 70%);opacity:0;transition:opacity .4s}
+.wcard:hover{border-color:rgba(232,184,96,.3);transform:translateY(-6px);box-shadow:0 20px 48px rgba(0,0,0,.45)}
+.wcard:hover::after{opacity:1}
+.wico{font-size:2rem;display:block;margin-bottom:1.2rem;filter:drop-shadow(0 0 10px rgba(232,184,96,.4))}
+.wcard h3{font-family:'Tenor Sans',serif;font-size:1.12rem;color:var(--cream);letter-spacing:.04em;margin-bottom:.7rem}
+.wcard p{font-size:.81rem;color:var(--dim);line-height:1.7;font-weight:300}
+
+/* Reservation */
+#reservation{position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(11,8,4,.97) 0%,rgba(20,14,6,.98) 100%)}
+#reservation::before{content:'';position:absolute;top:-25%;right:-15%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(200,129,58,.06),transparent 70%);pointer-events:none}
+.rgrid{display:grid;grid-template-columns:1fr 1.2fr;gap:6rem;align-items:center}
+.rtxt .stit{margin-bottom:1.6rem}
+.rtxt p{color:var(--dim);line-height:1.8;font-weight:300;margin-bottom:2rem;font-size:.92rem}
+.rinfo{display:flex;flex-direction:column;gap:1.2rem}
+.rrow{display:flex;align-items:flex-start;gap:1rem}
+.rico{font-size:1.2rem;margin-top:.1rem}
+.rdet strong{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:.2rem}
+.rdet span,.rdet a{font-size:.84rem;color:var(--dim);text-decoration:none;transition:color .3s;line-height:1.6}
+.rdet a{display:block}
+.rdet a:hover{color:var(--gold)}
+.rform{background:rgba(232,184,96,.04);backdrop-filter:blur(20px);border:1px solid rgba(232,184,96,.15);border-radius:6px;padding:3rem}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.fgrp{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
+.fgrp label{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(245,234,216,.32);font-weight:400}
+.fgrp input,.fgrp select{background:rgba(255,255,255,.05);border:1px solid rgba(232,184,96,.15);color:var(--cream);padding:.9rem 1.1rem;border-radius:2px;font-family:'Raleway',sans-serif;font-size:.87rem;font-weight:300;outline:none;transition:border-color .3s,background .3s;cursor:none;-webkit-appearance:none}
+.fgrp select option{background:var(--ember)}
+.fgrp input:focus,.fgrp select:focus{border-color:var(--gold);background:rgba(232,184,96,.07)}
+.fgrp input::placeholder{color:rgba(245,234,216,.2)}
+.fbtn{width:100%;padding:1.1rem;background:var(--gold);border:none;color:var(--night);font-family:'Raleway',sans-serif;font-size:.73rem;letter-spacing:.24em;text-transform:uppercase;font-weight:600;border-radius:2px;cursor:none;transition:all .35s var(--tr);margin-top:.5rem;position:relative;overflow:hidden}
+.fbtn::before{content:'';position:absolute;inset:0;background:var(--pale);transform:translateX(-100%);transition:transform .35s var(--tr)}
+.fbtn:hover::before{transform:translateX(0)}
+.fbtn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,184,96,.3)}
+.fbtn-t{position:relative;z-index:1}
+
+/* Location */
+#location{background:var(--night)}
+.lgrid{display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;align-items:start}
+.ldet .stit{margin-bottom:2rem}
+.icard{background:rgba(35,22,8,.55);border:1px solid rgba(232,184,96,.1);border-radius:4px;padding:1.8rem;margin-bottom:1.2rem}
+.icard h4{font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--amber);margin-bottom:.7rem}
+.icard p{color:var(--dim);font-size:.87rem;line-height:1.7;font-weight:300}
+.icard a{color:var(--copper);text-decoration:none;transition:color .3s}
+.icard a:hover{color:var(--gold)}
+.hrs{display:grid;grid-template-columns:1fr 1fr;gap:.3rem 1rem}
+.hd{font-size:.81rem;color:var(--dim);font-weight:300}
+.ht{font-size:.81rem;color:var(--gold);text-align:right;font-family:'Lora',serif;font-style:italic}
+.mwrap{border-radius:6px;overflow:hidden;height:480px;box-shadow:0 24px 64px rgba(0,0,0,.55);border:1px solid rgba(232,184,96,.1)}
+.mwrap iframe{width:100%;height:100%;border:none;filter:sepia(.25) saturate(.75) brightness(.7)}
+
+/* Footer */
+footer{background:var(--night);border-top:1px solid rgba(232,184,96,.08);padding:5rem 0 2.5rem}
+.ftgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:4rem;margin-bottom:4rem}
+.ftlogo{font-family:'Tenor Sans',serif;font-size:1.75rem;letter-spacing:.12em;color:var(--cream);display:block;margin-bottom:.8rem}
+.ftlogo span{color:var(--gold)}
+.ftdiv{width:30px;height:1px;background:var(--amber);opacity:.4;margin:1rem 0}
+.fttag{color:var(--dim);font-size:.82rem;font-weight:300;line-height:1.75;max-width:250px}
+.ftsoc{display:flex;gap:.7rem;margin-top:1.8rem}
+.fsl{width:40px;height:40px;border-radius:50%;border:1px solid rgba(232,184,96,.15);display:flex;align-items:center;justify-content:center;color:var(--dim);text-decoration:none;font-size:1rem;transition:all .3s}
+.fsl:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px);box-shadow:0 6px 20px rgba(232,184,96,.2)}
+.ftcol h5{font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--amber);margin-bottom:1.2rem;font-weight:400}
+.ftcol ul{list-style:none;display:flex;flex-direction:column;gap:.7rem}
+.ftcol ul a,.ftcol ul p{font-size:.82rem;color:var(--dim);text-decoration:none;font-weight:300;line-height:1.55;transition:color .3s}
+.ftcol ul a:hover{color:var(--amber)}
+.ftbot{border-top:1px solid rgba(232,184,96,.06);padding-top:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.ftbot p{font-size:.74rem;color:rgba(245,234,216,.2);font-weight:300;letter-spacing:.06em}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:9999;background:var(--brown);color:var(--cream);padding:1rem 1.6rem;border-radius:3px;font-size:.83rem;border-left:3px solid var(--gold);letter-spacing:.04em;transform:translateX(130%);transition:transform .4s var(--tr);box-shadow:0 8px 32px rgba(0,0,0,.5);max-width:320px}
+.toast.show{transform:translateX(0)}
+
+/* Responsive */
+@media(max-width:960px){
+  .agrid,.rgrid,.lgrid{grid-template-columns:1fr;gap:3rem}
+  .aimgs{height:380px}
+  .ftgrid{grid-template-columns:1fr 1fr;gap:2.5rem}
+  .ggrid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,185px)}
+  .gi:nth-child(1){grid-column:span 2;grid-row:span 1}
+  .gi:nth-child(5){grid-column:span 1}
+}
+@media(max-width:700px){
+  nav{padding:1.2rem 1.4rem}
+  nav.sc{padding:.9rem 1.4rem}
+  .nlinks,.ncta{display:none}
+  .nburg{display:flex}
+  .wrap{padding:0 1.2rem}
+  section{padding:5rem 0}
+  .frow{grid-template-columns:1fr}
+  .ftgrid{grid-template-columns:1fr;gap:2rem}
+  .ftbot{flex-direction:column;text-align:center}
+  .wgrid{grid-template-columns:1fr 1fr}
+  .rform{padding:2rem 1.4rem}
+  .astats{gap:1.5rem}
+}
+@media(max-width:420px){
+  .wgrid{grid-template-columns:1fr}
+  .ggrid{grid-template-columns:1fr;grid-template-rows:auto}
+  .gi,.gi:nth-child(1),.gi:nth-child(5){grid-column:span 1;height:200px}
+}
+</style>
+</head>
+<body>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <div class="ld-name">ОГНИ ТАШКЕНТА</div>
+  <div class="ld-sub">Кафе-ресторан · Стиль 60-х</div>
+  <div class="ld-bar"></div>
+</div>
+
+<!-- Cursor -->
+<div class="cdot" id="cdot"></div>
+<div class="cring" id="cring"></div>
+
+<!-- Nav -->
+<nav id="nav">
+  <a href="#hero" class="nlogo">ОГНИ <span>ТАШКЕНТА</span></a>
+  <ul class="nlinks">
+    <li><a href="#about">О нас</a></li>
+    <li><a href="#menu">Меню</a></li>
+    <li><a href="#gallery">Галерея</a></li>
+    <li><a href="#location">Адрес</a></li>
+  </ul>
+  <a href="#reservation" class="ncta">Забронировать</a>
+  <button class="nburg" id="burg" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mmenu" id="mmenu">
+  <button class="mcls" id="mcls">✕</button>
+  <a href="#about" class="ml">О нас</a>
+  <a href="#menu" class="ml">Меню</a>
+  <a href="#gallery" class="ml">Галерея</a>
+  <a href="#reservation" class="ml">Бронирование</a>
+  <a href="#location" class="ml">Адрес</a>
+</div>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="hbg" id="hbg"></div>
+  <div class="hpar" id="hpar"></div>
+  <div class="hcon" id="hcon">
+    <span class="hey">Ташкент · ул. Бухара 24</span>
+    <h1 class="htit">
+      ОГНИ
+      <span class="htit-g">Ташкента</span>
+    </h1>
+    <p class="hsub">Где вкус кофе встречается с атмосферой города.<br>Кафе-ресторан в стиле 60-х — открыт с 2018 года.</p>
+    <div class="hbtns">
+      <a href="#menu" class="bglow"><span>Смотреть меню</span></a>
+      <a href="#reservation" class="bghost">Забронировать стол</a>
+    </div>
+  </div>
+  <div class="hscrl">Листать</div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="wrap">
+    <div class="agrid">
+      <div class="aimgs rvl">
+        <img class="amain" src="https://www.afisha.uz/uploads/media/2018/11/0568674.jpeg" alt="Зал ресторана Огни Ташкента">
+        <img class="aacc" src="https://www.afisha.uz/uploads/media/2018/11/0248624.jpeg" alt="Интерьер Огни Ташкента">
+        <div class="aflame">🕯️</div>
+      </div>
+      <div class="atxt">
+        <span class="slbl rv d1">Наша история</span>
+        <h2 class="stit rv d2">Больше чем<br>просто <em>кафе</em></h2>
+        <p class="rv d3">«Огни Ташкента» — кафе-ресторан в стиле 60-х годов. Сделав шаг в наше заведение, вы тут же окажетесь в эпохе оттепели — мелодичная музыка, тёплый свет и атмосфера живого общения без телефонов.</p>
+        <p class="rv d4">Наше меню собрано по старым рецептам эпохи 60-х — блюда европейской и авторской кухни, приготовленные с душой и по ГОСТу. Днём — уютное кафе, вечером — ресторан на 155 мест с летней террасой и парковкой.</p>
+        <div class="astats rv d5">
+          <div>
+            <div class="sv">2018</div>
+            <div class="sl">Год открытия</div>
+          </div>
+          <div>
+            <div class="sv">155</div>
+            <div class="sl">Посадочных мест</div>
+          </div>
+          <div>
+            <div class="sv">5.0★</div>
+            <div class="sl">Рейтинг</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Menu -->
+<section id="menu">
+  <div class="wrap">
+    <div class="mhdr">
+      <span class="slbl rv">Наше меню</span>
+      <h2 class="stit rv d1">Рецепты <em>прошлого</em>,<br>вкус настоящего</h2>
+      <p class="rv d2">Блюда, собранные по старым книгам рецептов мам и бабушек — готовим с любовью и по ГОСТу. Каждую неделю новое дневное меню.</p>
+    </div>
+    <div class="mtabs rv d2">
+      <button class="mtab active" data-cat="coffee">Кофе и напитки</button>
+      <button class="mtab" data-cat="hot">Горячие блюда</button>
+      <button class="mtab" data-cat="desserts">Десерты и выпечка</button>
+      <button class="mtab" data-cat="breakfast">Завтраки</button>
+    </div>
+    <div class="mgrid" id="mgrid">
+
+      <!-- Coffee -->
+      <div class="mcard rv mcat active" data-category="coffee">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=82" alt="Капучино" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Кофе</span>
+          <div class="mname">Капучино</div>
+          <div class="mdesc">Классический итальянский капучино с нежной молочной пенкой — отличный старт дня.</div>
+          <div class="mprice">от 25 000 сум</div>
+        </div>
+      </div>
+      <div class="mcard rv d1 mcat active" data-category="coffee">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1534778101976-62847782c213?w=600&q=82" alt="Латте" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Кофе</span>
+          <div class="mname">Латте</div>
+          <div class="mdesc">Мягкий эспрессо с горячим бархатным молоком — классика для ценителей.</div>
+          <div class="mprice">от 27 000 сум</div>
+        </div>
+      </div>
+      <div class="mcard rv d2 mcat active" data-category="coffee">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=600&q=82" alt="Кофе Огни" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Авторский напиток</span>
+          <div class="mname">Кофе «Огни»</div>
+          <div class="mdesc">Наш фирменный напиток — эспрессо с карамелью, корицей и ноткой ванили. Согревает изнутри.</div>
+          <div class="mprice">от 32 000 сум</div>
+        </div>
+      </div>
+
+      <!-- Hot -->
+      <div class="mcard rv mcat" data-category="hot">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1432139509613-5c4255815697?w=600&q=82" alt="Котлеты по-киевски" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Фирменное блюдо</span>
+          <div class="mname">Котлеты по-киевски</div>
+          <div class="mdesc">Легендарное блюдо заведения. Сочные котлеты с маслом и зеленью — рецепт из советской книги.</div>
+          <div class="mprice">от 75 000 сум</div>
+        </div>
+      </div>
+      <div class="mcard rv d1 mcat" data-category="hot">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=82" alt="Стейк" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Горячее</span>
+          <div class="mname">Стейк</div>
+          <div class="mdesc">Сочный стейк из отборного мяса на гриле с гарниром и соусом на выбор.</div>
+          <div class="mprice">от 120 000 сум</div>
+        </div>
+      </div>
+      <div class="mcard rv d2 mcat" data-category="hot">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=600&q=82" alt="Паста" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Горячее</span>
+          <div class="mname">Паста карбонара</div>
+          <div class="mdesc">Итальянская классика с беконом, яйцом пашот и пармезаном — нежно и сытно.</div>
+          <div class="mprice">от 65 000 сум</div>
+        </div>
+      </div>
+
+      <!-- Desserts -->
+      <div class="mcard rv mcat" data-category="desserts">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&q=82" alt="Птичье молоко" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Десерт</span>
+          <div class="mname">Птичье молоко</div>
+          <div class="mdesc">Нежный советский торт с воздушным суфле и шоколадной глазурью — прямо из витрины 60-х.</div>
+          <div class="mprice">от 30 000 сум</div>
+        </div>
+      </div>
+      <div class="mcard rv d1 mcat" data-category="desserts">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&q=82" alt="Синнабон" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Выпечка</span>
+          <div class="mname">Синнабон</div>
+          <div class="mdesc">Мягкая булочка с корицей и кремом из витрины нашего советского буфета.</div>
+          <div class="mprice">от 22 000 сум</div>
+        </div>
+      </div>
+      <div class="mcard rv d2 mcat" data-category="desserts">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600&q=82" alt="Пирожное картошка" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Десерт</span>
+          <div class="mname">Пирожное «Картошка»</div>
+          <div class="mdesc">Классическое советское пирожное из бисквитной крошки с кремом — вкус детства.</div>
+          <div class="mprice">от 18 000 сум</div>
+        </div>
+      </div>
+
+      <!-- Breakfast -->
+      <div class="mcard rv mcat" data-category="breakfast">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1528736235302-52922df5c122?w=600&q=82" alt="Завтрак" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Завтрак</span>
+          <div class="mname">Сет «Утро»</div>
+          <div class="mdesc">Блинчики или сырники, кофе и свежий сок — тёплый старт нового дня в «Огнях».</div>
+          <div class="mprice">от 55 000 сум</div>
+        </div>
+      </div>
+      <div class="mcard rv d1 mcat" data-category="breakfast">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=600&q=82" alt="Каша" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Завтрак</span>
+          <div class="mname">Каша с ягодами</div>
+          <div class="mdesc">Тёплая овсяная каша со свежими ягодами, мёдом и грецкими орехами.</div>
+          <div class="mprice">от 28 000 сум</div>
+        </div>
+      </div>
+      <div class="mcard rv d2 mcat" data-category="breakfast">
+        <div class="miw"><img class="mimg" src="https://images.unsplash.com/photo-1600628421055-4d30de868b8f?w=600&q=82" alt="Яйца Бенедикт" loading="lazy"></div>
+        <div class="mbody">
+          <span class="mtag">Завтрак</span>
+          <div class="mname">Яйца Бенедикт</div>
+          <div class="mdesc">Яйца пашот на тосте с лососем и голландским соусом — изысканный завтрак.</div>
+          <div class="mprice">от 48 000 сум</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section id="gallery">
+  <div class="ghdr rv">
+    <span class="slbl" style="display:block;text-align:center">@ognitashkenta</span>
+    <h2 class="stit" style="text-align:center">Атмосфера <em>60-х</em></h2>
+    <p style="text-align:center">Живые моменты из жизни нашего заведения</p>
+  </div>
+  <div class="ggrid">
+    <div class="gi rv">
+      <img src="https://www.afisha.uz/uploads/media/2018/11/0871502.jpeg" alt="Основной зал" loading="lazy">
+      <div class="gov"><span>Основной зал</span></div>
+    </div>
+    <div class="gi rv d1">
+      <img src="https://www.afisha.uz/uploads/media/2018/11/0939608.jpeg" alt="Советский буфет" loading="lazy">
+      <div class="gov"><span>Советский буфет</span></div>
+    </div>
+    <div class="gi rv d2">
+      <img src="https://www.afisha.uz/uploads/media/2018/11/0947137.jpeg" alt="Блюда ресторана" loading="lazy">
+      <div class="gov"><span>Наши блюда</span></div>
+    </div>
+    <div class="gi rv d3">
+      <img src="https://www.afisha.uz/uploads/media/2018/11/0450973.jpeg" alt="Вечерняя атмосфера" loading="lazy">
+      <div class="gov"><span>Вечерняя атмосфера</span></div>
+    </div>
+    <div class="gi rv d1">
+      <img src="https://www.afisha.uz/uploads/media/2018/11/0489029.jpeg" alt="Детали интерьера" loading="lazy">
+      <div class="gov"><span>Детали интерьера</span></div>
+    </div>
+    <div class="gi rv d2">
+      <img src="https://www.afisha.uz/uploads/media/2018/11/0568674.jpeg" alt="Зал ресторана" loading="lazy">
+      <div class="gov"><span>Зал ресторана</span></div>
+    </div>
+    <div class="gi rv d3">
+      <img src="https://www.afisha.uz/uploads/media/2018/11/0248624.jpeg" alt="Интерьер" loading="lazy">
+      <div class="gov"><span>Интерьер</span></div>
+    </div>
+  </div>
+  <div class="gig rv">Следите за нами — <a href="https://www.instagram.com/ognitashkenta/" target="_blank">@ognitashkenta</a> &nbsp;·&nbsp; <a href="https://www.facebook.com/ognitashkenta/" target="_blank">Facebook</a></div>
+</section>
+
+<!-- Why -->
+<section id="why">
+  <div class="wrap">
+    <div class="whdr">
+      <span class="slbl rv">Почему мы</span>
+      <h2 class="stit rv d1">Отличие <em>Огней</em></h2>
+    </div>
+    <div class="wgrid">
+      <div class="wcard rv">
+        <span class="wico">☕</span>
+        <h3>Отборный кофе</h3>
+        <p>Свежеобжаренные зёрна, авторские рецепты напитков — каждая чашка с характером.</p>
+      </div>
+      <div class="wcard rv d1">
+        <span class="wico">🎷</span>
+        <h3>Атмосфера 60-х</h3>
+        <p>Интерьер, форма персонала, музыка — всё воссоздаёт магию советской оттепели.</p>
+      </div>
+      <div class="wcard rv d2">
+        <span class="wico">📸</span>
+        <h3>Фотогеничность</h3>
+        <p>Эксклюзивные светильники, яркие панно, ретро-детали — каждый угол готовый кадр.</p>
+      </div>
+      <div class="wcard rv d3">
+        <span class="wico">🍽️</span>
+        <h3>Рецепты по ГОСТу</h3>
+        <p>Меню из старых книг рецептов — блюда мам и бабушек, вкус настоящего детства.</p>
+      </div>
+      <div class="wcard rv d4">
+        <span class="wico">🌿</span>
+        <h3>Терраса и парковка</h3>
+        <p>Летняя терраса с видом на центр, удобная парковка, Wi-Fi и доставка на дом.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reservation -->
+<section id="reservation">
+  <div class="wrap">
+    <div class="rgrid">
+      <div class="rtxt">
+        <span class="slbl rv">Бронирование</span>
+        <h2 class="stit rv d1">Забронируйте<br><em>столик</em></h2>
+        <p class="rv d2">Займите ваше место в «Огнях Ташкента». Рекомендуем бронировать заранее — особенно на вечерние часы и выходные.</p>
+        <div class="rinfo rv d3">
+          <div class="rrow">
+            <span class="rico">📍</span>
+            <div class="rdet">
+              <strong>Адрес</strong>
+              <span>г. Ташкент, ул. Бухара 24, 1 этаж<br>Ориентир — ГАБТ им. А. Навои</span>
+            </div>
+          </div>
+          <div class="rrow">
+            <span class="rico">🕐</span>
+            <div class="rdet">
+              <strong>Часы работы</strong>
+              <span>Ежедневно: 08:00 – 23:00</span>
+            </div>
+          </div>
+          <div class="rrow">
+            <span class="rico">📞</span>
+            <div class="rdet">
+              <strong>Телефон</strong>
+              <a href="tel:+998911920024">+998 91 192 00 24</a>
+              <a href="tel:+998911920025">+998 91 192 00 25</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rform rv d2">
+        <div class="frow">
+          <div class="fgrp">
+            <label>Ваше имя</label>
+            <input type="text" placeholder="Полное имя" id="rn">
+          </div>
+          <div class="fgrp">
+            <label>Номер телефона</label>
+            <input type="tel" placeholder="+998 91 192 00 24" id="rp">
+          </div>
+        </div>
+        <div class="frow">
+          <div class="fgrp">
+            <label>Дата</label>
+            <input type="date" id="rd">
+          </div>
+          <div class="fgrp">
+            <label>Время</label>
+            <input type="time" id="rt">
+          </div>
+        </div>
+        <div class="fgrp">
+          <label>Количество гостей</label>
+          <select id="rg">
+            <option value="">Выберите количество</option>
+            <option value="1">1 человек</option>
+            <option value="2">2 человека</option>
+            <option value="3">3 человека</option>
+            <option value="4">4 человека</option>
+            <option value="5">5 человек</option>
+            <option value="6+">6 и более</option>
+          </select>
+        </div>
+        <button class="fbtn" onclick="book()"><span class="fbtn-t">Забронировать стол</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Location -->
+<section id="location">
+  <div class="wrap">
+    <div class="lgrid">
+      <div class="ldet">
+        <span class="slbl rv">Как нас найти</span>
+        <h2 class="stit rv d1">В центре<br><em>Ташкента</em></h2>
+        <div class="icard rv d2">
+          <h4>Адрес</h4>
+          <p>ул. Бухара 24, 1 этаж<br>Мирабадский район, Ташкент<br><br>Ориентир: ГАБТ имени Алишера Навои</p>
+        </div>
+        <div class="icard rv d3">
+          <h4>Часы работы</h4>
+          <div class="hrs">
+            <span class="hd">Ежедневно</span>
+            <span class="ht">08:00 – 23:00</span>
+          </div>
+        </div>
+        <div class="icard rv d4">
+          <h4>Контакты</h4>
+          <p>
+            📞 <a href="tel:+998911920024">+998 91 192 00 24</a><br>
+            📞 <a href="tel:+998911920025">+998 91 192 00 25</a><br>
+            📷 <a href="https://www.instagram.com/ognitashkenta/" target="_blank">@ognitashkenta</a><br>
+            📘 <a href="https://www.facebook.com/ognitashkenta/" target="_blank">Facebook</a>
+          </p>
+        </div>
+      </div>
+      <div class="mwrap rv d2">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.6!2d69.2808!3d41.2978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38ae8b4f42c7d50f%3A0x4e1b4f8c58a16a47!2sBukhara%20St%2C%2024%2C%20Tashkent%2C%20Uzbekistan!5e0!3m2!1sru!2s!4v1712000000000!5m2!1sru!2s"
+          loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+          title="Огни Ташкента на карте">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="wrap">
+    <div class="ftgrid">
+      <div>
+        <span class="ftlogo">ОГНИ <span>ТАШКЕНТА</span></span>
+        <div class="ftdiv"></div>
+        <p class="fttag">Кафе-ресторан в стиле 60-х. Ул. Бухара 24, Ташкент. Рады вас видеть каждый день!</p>
+        <div class="ftsoc">
+          <a href="https://www.instagram.com/ognitashkenta/" target="_blank" class="fsl" aria-label="Instagram">📷</a>
+          <a href="https://www.facebook.com/ognitashkenta/" target="_blank" class="fsl" aria-label="Facebook">📘</a>
+          <a href="tel:+998911920024" class="fsl" aria-label="Телефон">📞</a>
+        </div>
+      </div>
+      <div class="ftcol">
+        <h5>Навигация</h5>
+        <ul>
+          <li><a href="#about">О нас</a></li>
+          <li><a href="#menu">Меню</a></li>
+          <li><a href="#gallery">Галерея</a></li>
+          <li><a href="#reservation">Бронирование</a></li>
+          <li><a href="#location">Адрес</a></li>
+        </ul>
+      </div>
+      <div class="ftcol">
+        <h5>Контакты</h5>
+        <ul>
+          <li><p>ул. Бухара 24, Ташкент<br>Мирабадский район</p></li>
+          <li><a href="tel:+998911920024">+998 91 192 00 24</a></li>
+          <li><a href="tel:+998911920025">+998 91 192 00 25</a></li>
+          <li><a href="https://www.instagram.com/ognitashkenta/" target="_blank">@ognitashkenta</a></li>
+          <li><p>Ежедневно: 08:00 – 23:00</p></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftbot">
+      <p>© 2024 Огни Ташкента. Все права защищены.</p>
+      <p>Кафе-ресторан в стиле 60-х · Ташкент, Узбекистан</p>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Cursor
+const cdot=document.getElementById('cdot'),cring=document.getElementById('cring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cdot.style.left=mx+'px';cdot.style.top=my+'px'});
+(function ar(){rx+=(mx-rx)*.16;ry+=(my-ry)*.16;cring.style.left=rx+'px';cring.style.top=ry+'px';requestAnimationFrame(ar)})();
+
+// Loader
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('out');
+    document.getElementById('hbg').classList.add('on');
+    setTimeout(()=>document.getElementById('hcon').classList.add('on'),400);
+  },1900);
+});
+
+// Floating particles
+(function(){
+  const w=document.getElementById('hpar');
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.className='par';
+    p.style.cssText=`left:${Math.random()*100}%;top:${40+Math.random()*52}%;--d:${6+Math.random()*9}s;--dl:${Math.random()*7}s`;
+    w.appendChild(p);
+  }
+})();
+
+// Nav scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('sc',scrollY>60));
+
+// Mobile menu
+document.getElementById('burg').addEventListener('click',()=>document.getElementById('mmenu').classList.add('open'));
+document.getElementById('mcls').addEventListener('click',()=>document.getElementById('mmenu').classList.remove('open'));
+document.querySelectorAll('.ml').forEach(a=>a.addEventListener('click',()=>document.getElementById('mmenu').classList.remove('open')));
+
+// Scroll reveal
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}})},{threshold:.11,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.rv,.rvl').forEach(el=>obs.observe(el));
+
+// Menu tabs
+document.querySelectorAll('.mtab').forEach(tab=>{
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
+    this.classList.add('active');
+    const cat=this.dataset.cat;
+    document.querySelectorAll('.mcat').forEach(c=>{c.classList.remove('active');c.style.display='none'});
+    document.querySelectorAll(`.mcat[data-category="${cat}"]`).forEach((c,i)=>{
+      c.classList.add('active');c.style.display='';c.style.opacity='0';c.style.transform='translateY(18px)';
+      setTimeout(()=>{c.style.transition='opacity .5s ease,transform .5s ease';c.style.opacity='1';c.style.transform='translateY(0)'},i*80);
+    });
+  });
+});
+document.querySelectorAll('.mcat').forEach(c=>{c.style.display=c.classList.contains('active')?'':'none'});
+
+// Booking
+function book(){
+  const n=document.getElementById('rn').value.trim();
+  const p=document.getElementById('rp').value.trim();
+  const d=document.getElementById('rd').value;
+  const t=document.getElementById('rt').value;
+  const g=document.getElementById('rg').value;
+  if(!n||!p||!d||!t||!g){showToast('⚠️ Пожалуйста, заполните все поля.','#7a4a28');return}
+  showToast('✓ Бронирование отправлено! Скоро подтвердим.');
+  ['rn','rp','rd','rt','rg'].forEach(id=>document.getElementById(id).value='');
+}
+function showToast(msg,col){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.style.borderColor=col||'var(--gold)';
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3800);
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}
+  });
+});
+
+// Min date
+const rd=document.getElementById('rd');
+if(rd)rd.min=new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
